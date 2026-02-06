@@ -1,9 +1,0 @@
-procs:
-  inngest:
-    cmd: ["npm", "run", "inngest:dev"]
-
-  next:
-    cmd: ["npm", "run", "dev"]
-
-  prisma:
-    cmd: ["npx", "prisma", "studio"]
