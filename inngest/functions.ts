@@ -26,29 +26,44 @@ export const execute = inngest.createFunction(
         model: google("gemini-flash-latest"),
         system: "You are a helpful assistant.",
         prompt: "What is 2+2?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
       },
     );
 
-    // const { steps: anthropicSteps } = await step.ai.wrap(
-    //   "anthropic-generate-text",
-    //   generateText,
-    //   {
-    //     model: anthropic("claude-sonnet-4-5"),
-    //     system: "You are a helpful assistant.",
-    //     prompt: "What is 2+2?",
-    //   },
-    // );
+    const { steps: anthropicSteps } = await step.ai.wrap(
+      "anthropic-generate-text",
+      generateText,
+      {
+        model: anthropic("claude-sonnet-4-5"),
+        system: "You are a helpful assistant.",
+        prompt: "What is 2+2?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
+      },
+    );
 
-    // const { steps: openaiSteps } = await step.ai.wrap(
-    //   "openai-generate-text",
-    //   generateText,
-    //   {
-    //     model: openai("chatgpt-4o-latest"),
-    //     system: "You are a helpful assistant.",
-    //     prompt: "What is 2+2?",
-    //   },
-    // );
+    const { steps: openaiSteps } = await step.ai.wrap(
+      "openai-generate-text",
+      generateText,
+      {
+        model: openai("chatgpt-4o-latest"),
+        system: "You are a helpful assistant.",
+        prompt: "What is 2+2?",
+        experimental_telemetry: {
+          isEnabled: true,
+          recordInputs: true,
+          recordOutputs: true,
+        },
+      },
+    );
 
-    return { geminiSteps };
+    return { geminiSteps, openaiSteps, anthropicSteps };
   },
 );
