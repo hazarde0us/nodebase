@@ -21,7 +21,7 @@ export const auth = betterAuth({
           products: [
             {
               productId: "e969feb7-6219-4e5c-8aa7-7f6c86c00f11",
-              slug: "Nodebase-pro",
+              slug: "Nodebase-Pro",
             },
           ],
           successUrl: process.env.POLAR_SUCCESS_URL,
