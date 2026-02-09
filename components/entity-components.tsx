@@ -222,7 +222,7 @@ interface EmptyViewProps extends StateViewProps {
 
 export const EmptyView = ({ message, onNew }: EmptyViewProps) => {
   return (
-    <Empty className="border border-dashed bg-white">
+    <Empty className="bg-background border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant={"icon"}>
           <PackageOpenIcon />
@@ -347,7 +347,7 @@ export const EntityItem = ({
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    onClick={(e) => e.stopPropagation}
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <DropdownMenuItem onClick={handleRemove}>
                       <TrashIcon className="size-4" />

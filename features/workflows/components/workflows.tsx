@@ -35,7 +35,7 @@ export const WorkflowsSearch = () => {
     <EntitySearch
       value={searchValue}
       onChange={onSearchChange}
-      placeholder="Search wokflows"
+      placeholder="Search workflows"
     />
   );
 };
@@ -93,11 +93,7 @@ export const WorkflowsPagination = () => {
       disabled={workflows.isFetching}
       totalPages={workflows.data.totalPages}
       page={workflows.data.page}
-      onPageChange={(page) => {
-        setParams({ ...params, page });
-        console.log(params);
-        return;
-      }}
+      onPageChange={(page) => setParams({ ...params, page })}
     />
   );
 };
