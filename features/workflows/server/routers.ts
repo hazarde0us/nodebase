@@ -20,6 +20,14 @@ export const workflowsRouter = createTRPCRouter({
   remove: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
+      /**
+       * Probabably it would be better to
+       * 1. make a transation⭐️ of
+       * 2. verify ownership and the workflow does exist
+       * 3. then delete the worflow
+       * 4. wrap step two and three into a transaction to ensure atomicity
+       */
+
       return prisma.workflow.delete({
         where: {
           id: input.id,
