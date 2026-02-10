@@ -16,7 +16,7 @@ import Link from "next/link";
 import {
   useSuspenseWorkflow,
   useUpdateWorkflowName,
-} from "../../hooks/use-workflows";
+} from "@/features/workflows/hooks/use-workflows";
 
 export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
   return (
