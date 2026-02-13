@@ -6,6 +6,7 @@
 import { useState, useCallback } from "react";
 import {
   ReactFlow,
+  SelectionMode,
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
@@ -28,6 +29,8 @@ import { ErrorView, LoadingView } from "@/components/entity-components";
 import { useSuspenseWorkflow } from "@/features/workflows/hooks/use-workflows";
 import { nodeComponents } from "@/config/node-components";
 import { AddNodeButton } from "./add-node-button";
+import { editorAtom } from "../store/atoms";
+import { useSetAtom } from "jotai";
 
 export const EditorLoading = () => {
   return <LoadingView message="Loading Editor..." />;
@@ -39,6 +42,8 @@ export const EditorError = () => {
 
 export const Editor = ({ workflowId }: { workflowId: string }) => {
   const { data: workflow } = useSuspenseWorkflow(workflowId);
+
+  const setEditor = useSetAtom(editorAtom);
 
   const [nodes, setNodes] = useState<Node[]>(workflow.nodes);
   const [edges, setEdges] = useState<Edge[]>(workflow.edges);
@@ -68,12 +73,19 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
+        nodeTypes={nodeComponents}
         proOptions={{
           hideAttribution: true,
         }}
-        nodeTypes={nodeComponents}
+        onInit={setEditor}
+        snapGrid={[12, 12]}
+        snapToGrid // snaps to grid
+        panOnScroll={false} // for touchpad and touchscreen
+        panOnDrag={[1]}
+        selectionOnDrag={true} // canvas drag on selection
+        selectionMode={SelectionMode.Partial}
       >
-        <Background />
+        <Background gap={12} offset={12} />
         <Controls />
         <MiniMap />
         <Panel position="top-right">
