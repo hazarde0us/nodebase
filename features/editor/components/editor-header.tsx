@@ -48,7 +48,7 @@ export const EditorSaveButton = ({ workflowId }: { workflowId: string }) => {
         disabled={saveWorkflow.isPending}
       >
         <SaveIcon className="size-4" />
-        Save
+        Save Workflow
       </Button>
     </div>
   );

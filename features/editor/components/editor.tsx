@@ -87,7 +87,7 @@ export const Editor = ({ workflowId }: { workflowId: string }) => {
         snapGrid={[12, 12]}
         snapToGrid // snaps to grid
         panOnScroll={false} // for touchpad and touchscreen
-        panOnDrag={[1]}
+        panOnDrag={[1]} // uses middle mouse to drag on click
         selectionOnDrag={true} // canvas drag on selection
         selectionMode={SelectionMode.Partial}
       >
