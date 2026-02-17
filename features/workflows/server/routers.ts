@@ -10,6 +10,7 @@ import { PAGINATION } from "@/config/constants";
 import { NodeType } from "@/lib/generated/prisma/client";
 import { type Node, type Edge } from "@xyflow/react";
 import { inngest } from "@/inngest/client";
+import { sendWorkflowExecution } from "@/inngest/util";
 
 export const workflowsRouter = createTRPCRouter({
   execute: protectedProcedure
@@ -26,11 +27,8 @@ export const workflowsRouter = createTRPCRouter({
         },
       });
 
-      await inngest.send({
-        name: "workflows/execute.workflow",
-        data: {
-          workflowId: input.id,
-        },
+      await sendWorkflowExecution({
+        workflowId: input.id,
       });
 
       return workflow;
