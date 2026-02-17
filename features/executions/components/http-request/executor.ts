@@ -2,6 +2,8 @@ import Handlebars from "handlebars";
 import type { NodeExecutor } from "@/features/executions/lib/types";
 import { NonRetriableError } from "inngest";
 import ky, { type Options as KyOptions } from "ky";
+import { httpRequestChannel } from "@/inngest/channels/http-request";
+import { err } from "inngest/types";
 
 Handlebars.registerHelper("json", (context) => {
   const jsonString = JSON.stringify(context, null, 2);
@@ -22,61 +24,98 @@ export const httpRequestExecutor: NodeExecutor<HttpRequestData> = async ({
   nodeId,
   context,
   step,
+  publish,
 }) => {
-  //TODO: Publish "loading" state for http-request
+  await publish(
+    httpRequestChannel().status({
+      nodeId: nodeId,
+      status: "loading",
+    }),
+  );
 
   if (!data.endpoint) {
-    // TODO: Publish "error" state for http request
+    await publish(
+      httpRequestChannel().status({
+        nodeId: nodeId,
+        status: "error",
+      }),
+    );
     throw new NonRetriableError("HTTP Request Node: No endpoint configured");
   }
 
   if (!data.variableName) {
-    // TODO: Publish "error" state for http request
+    await publish(
+      httpRequestChannel().status({
+        nodeId: nodeId,
+        status: "error",
+      }),
+    );
     throw new NonRetriableError("Variable name not configured");
   }
 
   if (!data.method) {
-    // TODO: Publish "error" state for http request
+    await publish(
+      httpRequestChannel().status({
+        nodeId: nodeId,
+        status: "error",
+      }),
+    );
     throw new NonRetriableError("Method not configured");
   }
 
-  const result = await step.run("http-request", async () => {
-    const endpoint = Handlebars.compile(data.endpoint)(context);
+  try {
+    const result = await step.run("http-request", async () => {
+      const endpoint = Handlebars.compile(data.endpoint)(context);
 
-    const method = data.method;
+      const method = data.method;
 
-    const options: KyOptions = { method };
+      const options: KyOptions = { method };
 
-    if (["POST", "PUT", "PATCH"].includes(method)) {
-      const resolved = Handlebars.compile(data.body || "{}")(context);
-      JSON.parse(resolved);
-      options.body = resolved; // -> to handle invalid json in data.body
-      options.headers = {
-        "Content-type": "application/json",
+      if (["POST", "PUT", "PATCH"].includes(method)) {
+        const resolved = Handlebars.compile(data.body || "{}")(context);
+        JSON.parse(resolved);
+        options.body = resolved; // -> to handle invalid json in data.body
+        options.headers = {
+          "Content-type": "application/json",
+        };
+      }
+
+      const response = await ky(endpoint, options);
+      const contentType = response.headers.get("content-type");
+      const responseData = contentType?.includes("application/json")
+        ? await response.json()
+        : await response.text();
+
+      const repsonsePayload = {
+        httpResponse: {
+          status: response.status,
+          statusText: response.statusText,
+          data: responseData,
+        },
       };
-    }
 
-    const response = await ky(endpoint, options);
-    const contentType = response.headers.get("content-type");
-    const responseData = contentType?.includes("application/json")
-      ? await response.json()
-      : await response.text();
+      return {
+        ...context,
+        [data.variableName]: repsonsePayload,
+      };
+    });
 
-    const repsonsePayload = {
-      httpResponse: {
-        status: response.status,
-        statusText: response.statusText,
-        data: responseData,
-      },
-    };
+    await publish(
+      httpRequestChannel().status({
+        nodeId: nodeId,
+        status: "success",
+      }),
+    );
 
-    return {
-      ...context,
-      [data.variableName]: repsonsePayload,
-    };
-  });
+    return result;
+  } catch (error) {
+    await publish(
+      httpRequestChannel().status({
+        nodeId,
+        status: "error",
+      }),
+    );
 
-  //TODO: Publish "success" state for http-request
-
-  return result;
+    throw error;
+  }
 };
