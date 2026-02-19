@@ -73,12 +73,15 @@ export const GoogleFormTriggerDialog = ({
           <div className="bg-muted space-y-4 rounded-lg p-2">
             <h4 className="text-sm font-medium">Setup Instructions:</h4>
             <ol className="text-muted-foreground list-inside list-decimal space-y-1 text-sm">
-              <li>Open your Google Form</li>
-              <li>Click on the three dots menu → Script editor</li>
-              <li>Copy and paste the script below</li>
-              <li>Replace WEBHOOK_URL with your webhook URL above</li>
-              <li>Save and click "Triggers" → Add Trigger</li>
-              <li>Save and click "Triggers" → On form submit → Save</li>
+              <li>Open your Google Form.</li>
+              <li>Click on the three dots menu → Apps Script.</li>
+              <li>Copy and paste the script below.</li>
+              <li>
+                Replace WEBHOOK_URL with your webhook URL above and save it.
+              </li>
+              <li>Navigate to triggers in the side panel → Add Trigger.</li>
+              <li>Select event source → From form.</li>
+              <li>Select event source → On form submit and click save.</li>
             </ol>
           </div>
 
@@ -116,13 +119,13 @@ export const GoogleFormTriggerDialog = ({
               </li>
               <li>
                 <code className="bg-background py0.5 rounded px-1">
-                  {"{{googleForm.reponses['Question Name']}}"}
+                  {"{{googleForm.responses['Question Name']}}"}
                 </code>
                 - Specific answer
               </li>
               <li>
                 <code className="bg-background py0.5 rounded px-1">
-                  {"{{json googleForm.reponses}}"}
+                  {"{{json googleForm.responses}}"}
                 </code>
                 - All responses as json
               </li>
